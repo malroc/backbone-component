@@ -91,7 +91,7 @@
 
                 proto[ "observe" + componentName ] = function( selector ) {
                     if ( selector ) {
-                        component          = new cls;
+                        var component      = new cls;
                         component.selector = selector;
 
                         observe( component );

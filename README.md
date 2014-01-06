@@ -97,7 +97,7 @@ Calling this method is absolutely safe, so you can call it even if you are unsur
 
 Though not a descendant of `Backbone.View`, `Backbone.Component` inherits some of its methods and variables. Here they are: `el`, `$el`, `events`, `$( )`, `setElement( )`, `delegateEvents( )`/`undelegateEvents( )` (most probably you'll never need to explicitly call these two). All these methods and variables work in exactly the same way as they do in `Backbone.View`.
 
-*Note:* some of this methods and variables are available only if you use `jQuery` or similar lib. See `Backbone` documentation for more details.
+*Note:* some of these methods and variables are available only if you use `jQuery` or similar lib. See `Backbone` documentation for more details.
 
 ## Helpers
 

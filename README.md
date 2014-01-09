@@ -123,12 +123,12 @@ Unlike components, helpers do not inherit `Backbone.View`'s methods and variable
 
 ## Change Log
 
-v 0.2.0 (January 9, 2014)
+### v 0.2.0 (January 9, 2014)
 
 * Allow multi-element selectors in `observe` methods
 * `reobserveAll` removed, reobserving now happens automatically
 * Various minor updates and fixes
 
-v 0.1.0 (January 4, 2014)
+### v 0.1.0 (January 4, 2014)
 
 * Initial version

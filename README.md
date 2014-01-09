@@ -17,6 +17,16 @@ Creating a subview for that element is a bit better, but you still have to manua
 
 That's what `Backbone.Component` is for.
 
+## Installation
+
+`Backbone.Component` is available in Bower repository as `backbone_component`. If you use Bower, execute the following in your terminal window:
+
+```bash
+bower install backbone_component
+```
+
+Otherwise, just copy the file you need (minified or development version) to your javascript directory.
+
 ## Usage
 
 You need to include `backbone-component.js` in your project after `backbone.js`.

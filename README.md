@@ -19,7 +19,12 @@ That's what `Backbone.Component` is for.
 
 ## Usage
 
-You need to include `backbone-component.js` in your project after `backbone.js`. The only dependencies of `Backbone.Component` are `Backbone` itself and `Underscore` (which is also required by `Backbone`). `jQuery`/`Zepto` is not required, but as in case of `Backbone` gives you additional posiibilities (see below).
+You need to include `backbone-component.js` in your project after `backbone.js`.
+
+### Dependencies
+The only external dependencies of `Backbone.Component` are `Backbone` itself and `Underscore` (which is also required by `Backbone`). `jQuery`/`Zepto` is not required, but as in case of `Backbone` gives you additional posiibilities (see below).
+
+Also, `Backbone.Comonent` depends on `MutationObserver`. If you want to support browsers that don't implement it (e.g. IE<11) you need to use some polyfill.
 
 ### Initialization
 
@@ -76,26 +81,16 @@ All the arguments here are passed to the component's `generate` method unchanged
 In some cases you may preffer writing HTML for your components manually instead of generating it in your component class. You can still take advantage of using `Backbone.Component`'s `activate` & `deactivate` methods. In this case you need to call `observeYourComponent` somewhere in your view's `render` method. Just like `insert` methods, `observe` methods are added to your base view class during initialization. They accept a single argument: CSS selector of your component.
 
 ```javascript
-this.observeYourComponent( "#your-component-id" );
+this.observeYourComponent( ".your-component-class" );
 ```
 
 Now everytime an element with the given selector appears/disappears, component's `activate`/`deactivate` method executes.
 
-*Note:* currently you can only use selectors that match a single DOM element. This will be fixed in the future versions.
-
-### Reobserving
-
-It may happen that you don't want to render your views every single time they appear on the screen. Instead, you can render a view once and store it in memory until it appears again. Say you have `render` method that renders a view the first time and `redraw` method which is called when a rendered view appears again. To make `Backbone.Component` work after redrawing, you need to call `reobserveAll` method that doesn't accept any arguments. It will look for rendered components in your DOM and make their `activate`/`deactivate` methods work again as expected. Here is the code you need to place in your `redraw` method:
-
-```javascript
-this.reobserveAll( );
-```
-
-Calling this method is absolutely safe, so you can call it even if you are unsure if your components are active or not.
-
 ### Backbone.View's methods
 
 Though not a descendant of `Backbone.View`, `Backbone.Component` inherits some of its methods and variables. Here they are: `el`, `$el`, `events`, `$( )`, `setElement( )`, `delegateEvents( )`/`undelegateEvents( )` (most probably you'll never need to explicitly call these two). All these methods and variables work in exactly the same way as they do in `Backbone.View`.
+
+Also, `Backbone.Component` uses `Backbone.Event` mixin, so you are free to use events in your components just like in any other `Backbone` object.
 
 *Note:* some of these methods and variables are available only if you use `jQuery` or similar lib. See `Backbone` documentation for more details.
 
@@ -121,6 +116,19 @@ Now you can call it in your templates:
 <%= this.insertYourHelper( your, own, params ) %>
 ```
 
-Unlike components, helpers do not inherit `Backbone.View`'s methods and variables.
+Unlike components, helpers do not inherit `Backbone.View`'s methods and variables, and do not use `Backbone.Events`.
 
 *Note:* for performance reasons, you should not use components where helpers will do the work. `Backbone.Component` doesn't observe helpers in the way it observes components, so if all you need is to render a template, please consider using helpers.
+
+
+## Change Log
+
+v 0.2.0 (January 9, 2014)
+
+* Allow multi-element selectors in `observe` methods
+* `reobserveAll` removed, reobserving now happens automatically
+* Various minor updates and fixes
+
+v 0.1.0 (January 4, 2014)
+
+* Initial version

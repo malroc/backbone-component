@@ -1,4 +1,4 @@
-// Backbone.Component v0.1.0
+// Backbone.Component v0.2.0
 // (c) 2014 Oleg Kalistratov, for SourceTalk project (http://sourcetalk.net)
 // Distributed Under MIT License
 
@@ -19,23 +19,21 @@
             var namespace          = Backbone.Components;
             var baseViewClass      = Backbone.View;
             var transformHTML      = null;
-            var observedComponents = { };
+            var observedSelectors  = { };
+            var activeComponents   = { };
 
-            var observe = function( component ) {
-                if ( component.selector                        &&
-                     !observedComponents[ component.selector ] ) {
-                    observedComponents[ component.selector ] = component;
-                }
+            var observe = function( selector, componentClass ) {
+                observedSelectors[ selector ] ||
+                    ( observedSelectors[ selector ] = componentClass );
             };
 
             var unobserve = function( selector ) {
-                delete observedComponents[ selector ];
+                delete observedSelectors[ selector ];
             };
 
             var register = function( componentName ) {
-                var proto      = baseViewClass.prototype;
-                var components = observedComponents;
-                var cls        = null;
+                var proto = baseViewClass.prototype;
+                var cls   = null;
 
                 if ( _.isArray( namespace ) ) {
                     _.each(
@@ -59,25 +57,24 @@
                         replace( /([A-Z])/g, "-$1" ).
                         replace( /^\-+/, "" ).
                         toLowerCase( );
+                    var selector = "." + className;
 
                     wrapper[ "htmlId"    ] || ( wrapper[ "htmlId"    ] =
                                                 _.uniqueId( className )      );
                     wrapper[ "htmlClass" ] || ( wrapper[ "htmlClass" ] = ""  );
                     wrapper[ "htmlClass" ] += " " + className;
 
-                    component.selector      = "#" + wrapper[ "htmlId" ];
-                    component.componentName = componentName;
-
                     if ( component instanceof Backbone.Component ) {
-                        observe( component );
+                        observe( selector, cls );
                     }
 
-                    res = component.generate.apply( component, arguments );
+                    res = cls.prototype.generate.apply( cls.prototype ,
+                                                        arguments     );
                     res = template(
                         {
-                            "html"          : res                ,
-                            "componentName" : componentName      ,
-                            "selector"      : component.selector ,
+                            "html"          : res           ,
+                            "componentName" : componentName ,
+                            "selector"      : selector      ,
                             "wrapper"       : wrapper
                         }
                     );
@@ -89,24 +86,60 @@
                     return res;
                 };
 
-                proto[ "observe" + componentName ] = function( selector ) {
-                    if ( selector ) {
-                        var component      = new cls;
-                        component.selector = selector;
-
-                        observe( component );
-                    }
-                };
+                if ( cls.prototype instanceof Backbone.Component ) {
+                    proto[ "observe" + componentName ] = function( selector ) {
+                        if ( selector ) {
+                            observe( selector, cls );
+                        }
+                    };
+                }
             };
 
             var componentObserver = new MutationObserver(
-                function( ) {
+                function( mutations ) {
+                    // First, look for untracked elements
                     _.each(
-                        observedComponents ,
-                        function( component, selector ) {
-                            component.check( );
-                            if ( component.unobserveFlag ) {
-                                unobserve( selector );
+                        observedSelectors ,
+                        function( componentClass, selector ) {
+                            var elements =
+                                document.querySelectorAll(
+                                    selector + ":not(.component-active)"
+                                );
+
+                            _.each(
+                                elements ,
+                                function( el ) {
+                                    var component = new componentClass;
+                                    var id        = component.cid;
+
+                                    component.setElement( el );
+                                    component.activate( );
+                                    activeComponents[ id ] = component;
+                                    el.className += " component-active";
+                                    el.setAttribute( "data-component-id", id );
+                                }
+                            );
+                        }
+                    );
+
+                    // Now, look for removed elements
+                    _.each(
+                        activeComponents ,
+                        function( component ) {
+                            var el = component.el;
+
+                            if ( !document.body.contains( el ) ) {
+                                el.setAttribute( "data-component-id" ,
+                                                 null                );
+                                el.className =
+                                    _.chain( el.className.split( /\s/ ) ).
+                                    compact( ).
+                                    without( "component-active" ).
+                                    value( ).
+                                    join( " " );
+                                component.deactivate( );
+                                component.el = null;
+                                delete activeComponents[ component.cid ];
                             }
                         }
                     );
@@ -116,22 +149,19 @@
             var template = _.template(
                 "\
                     <span class=\"<%= wrapper[ \"htmlClass\" ] %>\"\
-                          id=\"<%= wrapper[ \"htmlId\" ] %>\"\
-                          data-component-selector=\"<%= selector %>\"\
-                          data-component-name=\"<%= componentName %>\">\
+                          id=\"<%= wrapper[ \"htmlId\" ] %>\">\
                         <%= html %>\
                     </span>\
                 "
             );
 
             Backbone.Helper = function( ) {
-                this.cid = _.uniqueId( "helper" );
+                this.cid = _.uniqueId( "component-" );
                 this.initialize.apply( this, arguments );
             };
 
             _.extend(
                 Backbone.Helper.prototype ,
-                Backbone.Events           ,
                 {
                     initialize: function( ) {
                     } ,
@@ -150,35 +180,13 @@
                     } ,
 
                     deactivate: function( ) {
-                    } ,
-
-                    check:      function( ) {
-                        var el = document.querySelector( this.selector );
-
-                        if ( el && !this.present ) {
-                            if ( !el.attributes[ "data-component-name" ] ) {
-                                el.setAttribute( "data-component-name" ,
-                                                 this.componentName    );
-                            }
-                            if ( !el.attributes[ "data-component-selector" ] ) {
-                                el.setAttribute( "data-component-selector" ,
-                                                 this.componentName        );
-                            }
-                            this.setElement( el );
-                            this.activate( );
-                        } else if ( !el && this.present ) {
-                            this.undelegateEvents( );
-                            this.deactivate( );
-                            this.unobserveFlag = true;
-                        }
-
-                        this.present = !!el;
                     }
                 }
             );
 
             _.extend(
                 Backbone.Component.prototype ,
+                Backbone.Events              ,
                 _.pick(
                     Backbone.View.prototype ,
                     "$"                     ,
@@ -188,7 +196,7 @@
                 )
             );
 
-            Backbone.Component.VERSION  = "0.1.0";
+            Backbone.Component.VERSION  = "0.2.0";
 
             Backbone.Component.initialize = function( options ) {
                 var initNS = function( ns ) {
@@ -217,28 +225,6 @@
 
                 baseViewClass.prototype.unobserve = function( selector ) {
                     unobserve( selector );
-                };
-
-                baseViewClass.prototype.reobserveAll = function( ) {
-                    var elements =
-                        this.el.querySelectorAll( "[data-component-selector]" );
-                    var view     = this;
-
-                    _.each(
-                        elements ,
-                        function( el ) {
-                            var componentName =
-                                el.getAttribute( "data-component-name"     );
-                            var selector      =
-                                el.getAttribute( "data-component-selector" );
-
-                            if ( selector                          &&
-                                 componentName                     &&
-                                 view[ "observe" + componentName ] ) {
-                                view[ "observe" + componentName ]( selector );
-                            }
-                        }
-                    );
                 };
 
                 componentObserver.observe(

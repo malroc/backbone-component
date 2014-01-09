@@ -1,7 +1,7 @@
 {
   "name": "backbone-component",
   "main": "backbone-component.js",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "homepage": "https://github.com/malroc/backbone-component",
   "authors": [
     "Oleg Kalistratov <oleg.kalistratov@gmail.com>"
@@ -17,9 +17,6 @@
   "license": "MIT",
   "ignore": [
     "**/.*",
-    "node_modules",
-    "bower_components",
-    "test",
-    "tests"
+    "spec"
   ]
 }

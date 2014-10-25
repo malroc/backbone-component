@@ -1,0 +1,59 @@
+<html>
+    <head>
+        <title>Backbone.Component: basic test</title>
+        <script src="https://code.jquery.com/jquery-2.1.1.js"></script>
+        <script src="../../bower_components/underscore/underscore.js"></script>
+        <script src="../../bower_components/backbone/backbone.js"></script>
+        <script src="../../backbone-component.js"></script>
+        <script>
+            Example = { };
+
+            Example.Component = Backbone.Component.extend(
+                {
+                    events: {
+                        "click a" : "change"
+                    } ,
+                    generate: _.template(
+                        "<a href=\"#\">Example component</a>"
+                    ) ,
+                    change: function( evt ) {
+                        evt.preventDefault( );
+                        this.$( "a" ).text( this.$( "a" ).text( ) + "." );
+                    }
+                }
+            );
+
+            Example.Helper = Backbone.Helper.extend(
+                {
+                    generate: _.template( "<strong>Example helper</strong>" )
+                }
+            );
+
+            Example.View = Backbone.View.extend(
+                {
+                    template: _.template(
+                        " \
+                        <p><%= this.insertComponent( ) %></p> \
+                        <p><%= this.insertHelper( ) %></p> \
+                        "
+                    ) ,
+                    render: function( ) {
+                        this.$el.html( this.template( ) );
+                    }
+                }
+            );
+
+            $(
+                function( ) {
+                    Backbone.Component.initialize( { "namespace" : Example } );
+
+                    var view = new Example.View;
+                    view.setElement( $( "body" ) );
+                    view.render( );
+                }
+            );
+        </script>
+    </head>
+    <body>
+    </body>
+</html>

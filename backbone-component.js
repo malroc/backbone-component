@@ -66,8 +66,6 @@
                         _.uniqueId( className );
                     var selector = "." + className;
 
-                    console.log(tagName, className, id);
-
                     className =
                         ( wrapper[ "htmlClass" ] || "" ) + " " + className;
 

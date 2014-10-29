@@ -96,9 +96,9 @@ this.observeYourComponent( ".your-component-class" );
 
 Now everytime an element with the given selector appears/disappears, component's `activate`/`deactivate` method executes.
 
-### Backbone.View's methods
+### Backbone.View's methods & properties
 
-Though not a descendant of `Backbone.View`, `Backbone.Component` inherits some of its methods and variables. Here they are: `el`, `$el`, `events`, `$( )`, `setElement( )`, `delegateEvents( )`/`undelegateEvents( )` (most probably you'll never need to explicitly call these two). All these methods and variables work in exactly the same way as they do in `Backbone.View`.
+Though not a descendant of `Backbone.View`, `Backbone.Component` inherits some of its methods and properties. Here they are: `el`, `$el`, `events`, `tagName`, `className`, `id`, `$( )`, `setElement( )`, `delegateEvents( )`/`undelegateEvents( )` (most probably you'll never need to explicitly call these two). All these methods and properties work in exactly the same way as they do in `Backbone.View` (except that `tagName` is a `span` by default).
 
 Also, `Backbone.Component` uses `Backbone.Event` mixin, so you are free to use events in your components just like in any other `Backbone` object.
 
@@ -132,6 +132,16 @@ Unlike components, helpers do not inherit `Backbone.View`'s methods and variable
 
 
 ## Change Log
+
+### v 0.2.2 (October 29, 2014)
+
+* Support for tagName, className & id properties added
+* Basic automated testing with NodeJS, CasperJS, Express & SlimerJS
+* Underscore.js dependency is removed from Bowerfile
+
+### v 0.2.1 (September 27, 2014)
+
+* Backward compatibility for Underscore.js 1.4.4
 
 ### v 0.2.0 (January 9, 2014)
 

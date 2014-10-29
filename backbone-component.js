@@ -51,9 +51,9 @@
                     var component = new cls;
                     var wrapper   =
                         ( _.last( arguments ) || { } )[ "wrapper" ] || { };
-                    var tagName   = component.tagName || "span";
+                    var tagName   = _.result( component, "tagName" ) || "span";
                     var className =
-                        component.className || (
+                        _.result( component, "className" ) || (
                             "component-" +
                             componentName.
                             replace( /([A-Z])/g, "-$1" ).
@@ -61,8 +61,8 @@
                             toLowerCase( )
                         );
                     var id        =
-                        wrapper[ "htmlId" ]     ||
-                        component.id            ||
+                        wrapper[ "htmlId" ]         ||
+                        _.result( component, "id" ) ||
                         _.uniqueId( className );
                     var selector = "." + className;
 

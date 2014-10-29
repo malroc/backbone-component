@@ -27,7 +27,7 @@
                 {
                     id: "cmp-2",
                     className: "component-2",
-                    tagName: "div",
+                    tagName: function( ) { return "div"; },
                     generate: _.template(
                         "Example component 2"
                     )

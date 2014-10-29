@@ -8,18 +8,29 @@
         <script>
             Example = { };
 
-            Example.Component = Backbone.Component.extend(
+            Example.Component1 = Backbone.Component.extend(
                 {
                     events: {
                         "click a" : "change"
                     } ,
                     generate: _.template(
-                        "<a href=\"#\">Example component</a>"
+                        "<a href=\"#\">Example component 1</a>"
                     ) ,
                     change: function( evt ) {
                         evt.preventDefault( );
                         this.$( "a" ).text( this.$( "a" ).text( ) + "." );
                     }
+                }
+            );
+
+            Example.Component2 = Backbone.Component.extend(
+                {
+                    id: "cmp-2",
+                    className: "component-2",
+                    tagName: "div",
+                    generate: _.template(
+                        "Example component 2"
+                    )
                 }
             );
 
@@ -33,7 +44,8 @@
                 {
                     template: _.template(
                         " \
-                        <p><%= this.insertComponent( ) %></p> \
+                        <p><%= this.insertComponent1( ) %></p> \
+                        <%= this.insertComponent2( ) %> \
                         <p><%= this.insertHelper( ) %></p> \
                         "
                     ) ,

@@ -51,18 +51,25 @@
                     var component = new cls;
                     var wrapper   =
                         ( _.last( arguments ) || { } )[ "wrapper" ] || { };
+                    var tagName   = component.tagName || "span";
                     var className =
-                        "component-" +
-                        componentName.
-                        replace( /([A-Z])/g, "-$1" ).
-                        replace( /^\-+/, "" ).
-                        toLowerCase( );
+                        component.className || (
+                            "component-" +
+                            componentName.
+                            replace( /([A-Z])/g, "-$1" ).
+                            replace( /^\-+/, "" ).
+                            toLowerCase( )
+                        );
+                    var id        =
+                        wrapper[ "htmlId" ]     ||
+                        component.id            ||
+                        _.uniqueId( className );
                     var selector = "." + className;
 
-                    wrapper[ "htmlId"    ] || ( wrapper[ "htmlId"    ] =
-                                                _.uniqueId( className )      );
-                    wrapper[ "htmlClass" ] || ( wrapper[ "htmlClass" ] = ""  );
-                    wrapper[ "htmlClass" ] += " " + className;
+                    console.log(tagName, className, id);
+
+                    className =
+                        ( wrapper[ "htmlClass" ] || "" ) + " " + className;
 
                     if ( component instanceof Backbone.Component ) {
                         observe( selector, cls );
@@ -72,10 +79,10 @@
                                                         arguments     );
                     res = template(
                         {
-                            "html"          : res           ,
-                            "componentName" : componentName ,
-                            "selector"      : selector      ,
-                            "wrapper"       : wrapper
+                            "html"          : res       ,
+                            "tagName"       : tagName   ,
+                            "className"     : className ,
+                            "id"            : id
                         }
                     );
 
@@ -148,10 +155,10 @@
 
             var template = _.template(
                 "\
-                    <span class=\"<%= wrapper[ \"htmlClass\" ] %>\"\
-                          id=\"<%= wrapper[ \"htmlId\" ] %>\">\
+                    <<%= tagName %> class=\"<%= className %>\"\
+                          id=\"<%= id %>\">\
                         <%= html %>\
-                    </span>\
+                    </<%= tagName %>>\
                 "
             );
 

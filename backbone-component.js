@@ -27,13 +27,8 @@
                     ( observedSelectors[ selector ] = componentClass );
             };
 
-            var unobserve = function( selector ) {
-                delete observedSelectors[ selector ];
-            };
-
-            var register = function( componentName ) {
-                var proto = baseViewClass.prototype;
-                var cls   = null;
+            var toComponentClass = function( componentName ) {
+                var cls = null;
 
                 if ( _.isArray( namespace ) ) {
                     _.each(
@@ -46,35 +41,46 @@
                     cls = namespace[ componentName ];
                 }
 
-                proto[ "insert" + componentName ] = function( ) {
+                return cls;
+            };
+
+            var toClassName = function( componentName ) {
+                return _.result( toComponentClass( componentName ).
+                                 prototype                          ,
+                                 "className"                        ) || (
+                           "component-" +
+                           componentName.
+                           replace( /([A-Z])/g, "-$1" ).
+                           replace( /^\-+/, "" ).
+                           toLowerCase( )
+                       );
+            };
+
+            var register = function( componentName ) {
+                var cls       = toComponentClass( componentName );
+                var selector  = "." + toClassName( componentName );
+                var cmpProto  = cls.prototype;
+                var viewProto = baseViewClass.prototype;
+
+                if ( cls.prototype instanceof Backbone.Component ) {
+                    observe( selector, cls );
+                }
+
+                viewProto[ "insert" + componentName ] = function( ) {
                     var res       = "";
-                    var component = new cls;
                     var wrapper   =
                         ( _.last( arguments ) || { } )[ "wrapper" ] || { };
-                    var tagName   = _.result( component, "tagName" ) || "span";
-                    var className =
-                        _.result( component, "className" ) || (
-                            "component-" +
-                            componentName.
-                            replace( /([A-Z])/g, "-$1" ).
-                            replace( /^\-+/, "" ).
-                            toLowerCase( )
-                        );
+                    var tagName   = _.result( cmpProto, "tagName" ) || "span";
                     var id        =
-                        wrapper[ "htmlId" ]         ||
-                        _.result( component, "id" ) ||
+                        wrapper[ "htmlId" ]             ||
+                        _.result( cmpProto, "id" ) ||
                         _.uniqueId( className );
-                    var selector = "." + className;
+                    var className =
+                        ( wrapper[ "htmlClass" ] || "" ) +
+                        " "                              +
+                        toClassName( componentName );
 
-                    className =
-                        ( wrapper[ "htmlClass" ] || "" ) + " " + className;
-
-                    if ( component instanceof Backbone.Component ) {
-                        observe( selector, cls );
-                    }
-
-                    res = cls.prototype.generate.apply( cls.prototype ,
-                                                        arguments     );
+                    res = cmpProto.generate.apply( cmpProto , arguments );
                     res = template(
                         {
                             "html"          : res       ,
@@ -90,14 +96,6 @@
 
                     return res;
                 };
-
-                if ( cls.prototype instanceof Backbone.Component ) {
-                    proto[ "observe" + componentName ] = function( selector ) {
-                        if ( selector ) {
-                            observe( selector, cls );
-                        }
-                    };
-                }
             };
 
             var componentObserver = new MutationObserver(
@@ -227,10 +225,6 @@
                 } else {
                     initNS( namespace );
                 }
-
-                baseViewClass.prototype.unobserve = function( selector ) {
-                    unobserve( selector );
-                };
 
                 componentObserver.observe(
                     document.body ,

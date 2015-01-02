@@ -72,9 +72,9 @@
                         ( _.last( arguments ) || { } )[ "wrapper" ] || { };
                     var tagName   = _.result( cmpProto, "tagName" ) || "span";
                     var id        =
-                        wrapper[ "htmlId" ]             ||
-                        _.result( cmpProto, "id" ) ||
-                        _.uniqueId( className );
+                        wrapper[ "htmlId" ]                               ||
+                        _.result( cmpProto, "id" )                        ||
+                        _.uniqueId( toClassName( componentName ) + "-" );
                     var className =
                         ( wrapper[ "htmlClass" ] || "" ) +
                         " "                              +
@@ -140,6 +140,8 @@
                                     without( "component-active" ).
                                     value( ).
                                     join( " " );
+                                component.undelegateEvents( );
+                                component.stopListening( );
                                 component.deactivate( );
                                 component.el = null;
                                 delete activeComponents[ component.cid ];
@@ -150,12 +152,9 @@
             );
 
             var template = _.template(
-                "\
-                    <<%= tagName %> class=\"<%= className %>\"\
-                          id=\"<%= id %>\">\
-                        <%= html %>\
-                    </<%= tagName %>>\
-                "
+                "<<%= tagName %> class=\"<%= className %>\" id=\"<%= id %>\">" +
+                "<%= html %>"                                                  +
+                "</<%= tagName %>>"
             );
 
             Backbone.Helper = function( ) {

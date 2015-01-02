@@ -100,8 +100,8 @@ name is `YourComponentName`) otherwise.
 Everytime an element with an appropriate class appears/disappears, component's
 `activate`/`deactivate` method executes.
 
-*Note:* you _have_ to create the content of your element manually in this case.
-`Backbone.Component` won't do that for you.
+*Note:* you **have** to create the content of your element manually in this
+case. `Backbone.Component` won't do that for you.
 
 ### Backbone.View's methods & properties
 
@@ -140,7 +140,7 @@ Unlike components, helpers do not inherit `Backbone.View`'s methods and variable
 
 ## Change Log
 
-### v 0.2.3 (Jan 02, 2015)
+### v 0.2.3 (January 2, 2015)
 
 * `observe` methods removed, observing now happens automatically
 * Various minor updates and fixes

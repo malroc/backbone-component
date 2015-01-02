@@ -25,9 +25,9 @@
 
             Example.Component2 = Backbone.Component.extend(
                 {
-                    id: "cmp-2",
                     className: "component-2",
                     tagName: function( ) { return "div"; },
+                    id: function( ) { return _.uniqueId( "cmp-2-" ) },
                     generate: _.template(
                         "Example component 2"
                     )
@@ -43,11 +43,9 @@
             Example.View = Backbone.View.extend(
                 {
                     template: _.template(
-                        " \
-                        <p><%= this.insertComponent1( ) %></p> \
-                        <%= this.insertComponent2( ) %> \
-                        <p><%= this.insertHelper( ) %></p> \
-                        "
+                        "<p><%= this.insertComponent1( ) %></p>" +
+                        "<%= this.insertComponent2( ) %>"        +
+                        "<p><%= this.insertHelper( ) %></p>"
                     ) ,
                     render: function( ) {
                         this.$el.html( this.template( ) );
@@ -59,13 +57,19 @@
                 function( ) {
                     Backbone.Component.initialize( { "namespace" : Example } );
 
-                    var view = new Example.View;
-                    view.setElement( $( "body" ) );
-                    view.render( );
+                    var view1 = new Example.View;
+                    view1.setElement( $( "#view-1" ) );
+                    view1.render( );
+
+                    var view2 = new Example.View;
+                    view2.setElement( $( "#view-2" ) );
+                    view2.render( );
                 }
             );
         </script>
     </head>
     <body>
+      <div id="view-1"></div>
+      <div id="view-2"></div>
     </body>
 </html>

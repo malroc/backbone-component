@@ -88,13 +88,20 @@ All the arguments here are passed to the component's `generate` method unchanged
 
 ### Observing
 
-In some cases you may preffer writing HTML for your components manually instead of generating it in your component class. You can still take advantage of using `Backbone.Component`'s `activate` & `deactivate` methods. In this case you need to call `observeYourComponent` somewhere in your view's `render` method. Just like `insert` methods, `observe` methods are added to your base view class during initialization. They accept a single argument: CSS selector of your component.
+In some cases you may preffer writing HTML for your components manually instead
+of generating it in your component class. You can still take advantage of using
+`Backbone.Component`'s `activate` & `deactivate` methods.
 
-```javascript
-this.observeYourComponent( ".your-component-class" );
-```
+Since version 0.2.3, you don't need to do anything for that: just create an HTML
+element with class either matching your component's `className` attribute if it
+is defined, or `component-your-component-name` (assuming your component class
+name is `YourComponentName`) otherwise.
 
-Now everytime an element with the given selector appears/disappears, component's `activate`/`deactivate` method executes.
+Everytime an element with an appropriate class appears/disappears, component's
+`activate`/`deactivate` method executes.
+
+*Note:* you _have_ to create the content of your element manually in this case.
+`Backbone.Component` won't do that for you.
 
 ### Backbone.View's methods & properties
 
@@ -132,6 +139,11 @@ Unlike components, helpers do not inherit `Backbone.View`'s methods and variable
 
 
 ## Change Log
+
+### v 0.2.3 (Jan 02, 2015)
+
+* `observe` methods removed, observing now happens automatically
+* Various minor updates and fixes
 
 ### v 0.2.2 (October 29, 2014)
 

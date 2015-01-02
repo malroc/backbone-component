@@ -1,5 +1,5 @@
-// Backbone.Component v0.2.2
-// (c) 2014 Oleg Kalistratov, for SourceTalk project (http://sourcetalk.net)
+// Backbone.Component v0.2.3
+// (c) 2015 Oleg Kalistratov, for SourceTalk project (http://sourcetalk.net)
 // Distributed Under MIT License
 
 (
@@ -198,7 +198,7 @@
                 )
             );
 
-            Backbone.Component.VERSION  = "0.2.2";
+            Backbone.Component.VERSION  = "0.2.3";
 
             Backbone.Component.initialize = function( options ) {
                 var initNS = function( ns ) {

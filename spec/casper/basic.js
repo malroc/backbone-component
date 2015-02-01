@@ -14,19 +14,19 @@ casper.test.begin(
             ".component-component1 a" ,
             function( ) {
                 for ( i = 1; i < 3; i++ ) {
-                    test.assertExists( "#view-"                            +
-                                       i                                   +
-                                       " .component-component1"            +
-                                       "[id^=\"component-component1-\"] a" ,
-                                       "component 1 is found"              );
-                    test.assertExists( "#view-"                            +
-                                       i                                   +
-                                       " div.component-2[id^=\"cmp-2-\"]"  ,
-                                       "component 2 is found"              );
-                    test.assertExists( "#view-"                            +
-                                       i                                   +
-                                       " .component-helper strong"         ,
-                                       "helper is found"                   );
+                    test.assertExists( "#view-"                             +
+                                       i                                    +
+                                       " .component-component1"             +
+                                       "[id^=\"component-component1-\"] a"  ,
+                                       "component 1 is found"               );
+                    test.assertExists( "#view-"                             +
+                                       i                                    +
+                                       " div.component-2[id^=\"cmp-2-\"]"   ,
+                                       "component 2 is found"               );
+                    test.assertExists( "#view-"                             +
+                                       i                                    +
+                                       " .helper-helper strong"             ,
+                                       "helper is found"                    );
                     test.assertSelectorHasText( "#view-"                    +
                                                 i                           +
                                                 " .component-component1 a"  ,
@@ -37,9 +37,9 @@ casper.test.begin(
                                                 "Example component 2"       );
                     test.assertSelectorHasText( "#view-"                    +
                                                 i                           +
-                                                " .component-helper strong" ,
+                                                " .helper-helper strong"    ,
                                                 "Example helper"            );
-                    this.click( "#view-" + i + " .component-component1 a" );
+                    this.click( "#view-" + i + " .component-component1 a"   );
                 };
             }
         );

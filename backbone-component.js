@@ -44,11 +44,11 @@
                 return cls;
             };
 
-            var toClassName = function( componentName ) {
-                return _.result( toComponentClass( componentName ).
-                                 prototype                          ,
-                                 "className"                        ) || (
-                           "component-" +
+            var toClassName = function( componentName  ,
+                                        proto          ,
+                                        isComponent    ) {
+                return _.result( proto , "className" ) || (
+                           ( isComponent ? "component-" : "helper-" ) +
                            componentName.
                            replace( /([A-Z])/g, "-$1" ).
                            replace( /^\-+/, "" ).
@@ -57,36 +57,39 @@
             };
 
             var register = function( componentName ) {
-                var cls       = toComponentClass( componentName );
-                var selector  = "." + toClassName( componentName );
-                var cmpProto  = cls.prototype;
-                var viewProto = baseViewClass.prototype;
+                var cls         = toComponentClass( componentName );
+                var cmpProto    = cls.prototype;
+                var isComponent = cmpProto instanceof Backbone.Component;
+                var viewProto   = baseViewClass.prototype;
+                var className   = toClassName( componentName ,
+                                               cmpProto      ,
+                                               isComponent   );
 
-                if ( cls.prototype instanceof Backbone.Component ) {
-                    observe( selector, cls );
+                if ( isComponent ) {
+                    observe( "." + className, cls );
                 }
 
                 viewProto[ "insert" + componentName ] = function( ) {
                     var res       = "";
                     var wrapper   =
                         ( _.last( arguments ) || { } )[ "wrapper" ] || { };
-                    var tagName   = _.result( cmpProto, "tagName" ) || "span";
-                    var id        =
-                        wrapper[ "htmlId" ]                               ||
-                        _.result( cmpProto, "id" )                        ||
-                        _.uniqueId( toClassName( componentName ) + "-" );
-                    var className =
-                        ( wrapper[ "htmlClass" ] || "" ) +
-                        " "                              +
-                        toClassName( componentName );
 
-                    res = cmpProto.generate.apply( cmpProto , arguments );
                     res = template(
                         {
-                            "html"          : res       ,
-                            "tagName"       : tagName   ,
-                            "className"     : className ,
-                            "id"            : id
+                            "html"          :
+                              cmpProto.generate.apply( cmpProto  ,
+                                                       arguments ) ,
+                            "tagName"       :
+                              ( _.result( cmpProto, "tagName" )  ||
+                                "span"                           ) ,
+                            "className"     :
+                              ( ( wrapper[ "htmlClass" ] || "" ) +
+                                " "                              +
+                                className                        ) ,
+                            "id"            :
+                              ( wrapper[ "htmlId" ]              ||
+                                _.result( cmpProto, "id" )       ||
+                                _.uniqueId( className + "-" )    )
                         }
                     );
 

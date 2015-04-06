@@ -1,17 +1,19 @@
 casper.test.begin(
     "Basic test: core component/helper functionality" ,
-    15                                                ,
+    18                                                ,
     function suite( test ) {
         casper.start(
             "http://localhost:8000/spec/examples/basic.html" ,
             function( ) {
                 test.assertTitle( "Backbone.Component: basic test" ,
                                   "HTML page title"                );
+                this.click( "#render-view-1" );
+                this.click( "#render-view-2" );
             }
         );
 
         casper.waitForSelector(
-            ".component-component1 a" ,
+            "#view-2 .component-component1 a" ,
             function( ) {
                 for ( i = 1; i < 3; i++ ) {
                     test.assertExists( "#view-"                             +
@@ -39,6 +41,8 @@ casper.test.begin(
                                                 i                           +
                                                 " .helper-helper strong"    ,
                                                 "Example helper"            );
+                    test.assertSelectorHasText( "#initialize-output"        ,
+                                                "++"                        );
                     this.click( "#view-" + i + " .component-component1 a"   );
                 };
             }
@@ -48,11 +52,20 @@ casper.test.begin(
             ".component-component1 a" ,
             function( ) {
                 for ( i = 1; i < 3; i++ ) {
-                  test.assertSelectorHasText( "#view-"                   +
-                                              i                          +
-                                              " .component-component1 a" ,
-                                              "Example component 1."     );
+                    test.assertSelectorHasText( "#view-"                    +
+                                                i                           +
+                                                " .component-component1 a"  ,
+                                                "Example component 1."      );
+                    this.click( "#remove-view-" + i );
                 }
+            }
+        );
+
+        casper.waitForSelectorTextChange(
+            "#remove-output" ,
+            function( ) {
+                test.assertSelectorHasText( "#initialize-output" ,
+                                            "++"                 );
             }
         );
 

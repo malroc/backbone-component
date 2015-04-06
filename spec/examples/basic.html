@@ -13,9 +13,11 @@
                     events: {
                         "click a" : "change"
                     } ,
+
                     generate: _.template(
                         "<a href=\"#\">Example component 1</a>"
                     ) ,
+
                     change: function( evt ) {
                         evt.preventDefault( );
                         this.$( "a" ).text( this.$( "a" ).text( ) + "." );
@@ -26,8 +28,19 @@
             Example.Component2 = Backbone.Component.extend(
                 {
                     className: "component-2",
+
                     tagName: function( ) { return "div"; },
+
                     id: function( ) { return _.uniqueId( "cmp-2-" ) },
+
+                    initialize: function( ) {
+                        $( "#initialize-output" ).append( "+" );
+                    } ,
+
+                    remove: function( ) {
+                        $( "#remove-output" ).append( "-" );
+                    } ,
+
                     generate: _.template(
                         "Example component 2"
                     )
@@ -47,6 +60,7 @@
                         "<%= this.insertComponent2( ) %>"        +
                         "<p><%= this.insertHelper( ) %></p>"
                     ) ,
+
                     render: function( ) {
                         this.$el.html( this.template( ) );
                     }
@@ -58,12 +72,34 @@
                     Backbone.Component.initialize( { "namespace" : Example } );
 
                     var view1 = new Example.View;
-                    view1.setElement( $( "#view-1" ) );
-                    view1.render( );
+
+                    $( "#render-view-1" ).click(
+                        function( ) {
+                            view1.setElement( $( "#view-1" ) );
+                            view1.render( );
+                        }
+                    );
+
+                    $( "#remove-view-1" ).click(
+                        function( ) {
+                            view1.remove( );
+                        }
+                    );
 
                     var view2 = new Example.View;
-                    view2.setElement( $( "#view-2" ) );
-                    view2.render( );
+
+                    $( "#render-view-2" ).click(
+                        function( ) {
+                            view2.setElement( $( "#view-2" ) );
+                            view2.render( );
+                        }
+                    );
+
+                    $( "#remove-view-2" ).click(
+                        function( ) {
+                            view2.remove( );
+                        }
+                    );
                 }
             );
         </script>
@@ -71,5 +107,11 @@
     <body>
       <div id="view-1"></div>
       <div id="view-2"></div>
+      <div id="initialize-output"></div>
+      <div id="remove-output"></div>
+      <a id="render-view-1" href="#">Render view #1</a>
+      <a id="render-view-2" href="#">Render view #2</a>
+      <a id="remove-view-1" href="#">Remove view #1</a>
+      <a id="remove-view-2" href="#">Remove view #2</a>
     </body>
 </html>

@@ -116,10 +116,11 @@
                                 elements ,
                                 function( el ) {
                                     var component = new componentClass;
-                                    var id        = component.cid;
+                                    var id        = _.uniqueId( "component-" );
 
+                                    component.cid = id;
                                     component.setElement( el );
-                                    component.activate( );
+                                    component.initialize( );
                                     activeComponents[ id ] = component;
                                     el.className += " component-active";
                                     el.setAttribute( "data-component-id", id );
@@ -145,7 +146,7 @@
                                     join( " " );
                                 component.undelegateEvents( );
                                 component.stopListening( );
-                                component.deactivate( );
+                                component.remove( );
                                 component.el = null;
                                 delete activeComponents[ component.cid ];
                             }
@@ -160,17 +161,11 @@
                 "</<%= tagName %>>"
             );
 
-            Backbone.Helper = function( ) {
-                this.cid = _.uniqueId( "component-" );
-                this.initialize.apply( this, arguments );
-            };
+            Backbone.Helper = function( ) { };
 
             _.extend(
                 Backbone.Helper.prototype ,
                 {
-                    initialize: function( ) {
-                    } ,
-
                     generate:   function( ) {
                         return "";
                     }
@@ -181,10 +176,10 @@
 
             Backbone.Component = Backbone.Helper.extend(
                 {
-                    activate:   function( ) {
+                    initialize: function( ) {
                     } ,
 
-                    deactivate: function( ) {
+                    remove:     function( ) {
                     }
                 }
             );

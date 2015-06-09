@@ -14,7 +14,7 @@
                         "click a" : "change"
                     } ,
 
-                    generate: _.template(
+                    template: _.template(
                         "<a href=\"#\">Example component 1</a>"
                     ) ,
 
@@ -41,7 +41,7 @@
                         $( "#remove-output" ).append( "-" );
                     } ,
 
-                    generate: _.template(
+                    template: _.template(
                         "Example component 2"
                     )
                 }
@@ -49,7 +49,7 @@
 
             Example.Helper = Backbone.Helper.extend(
                 {
-                    generate: _.template( "<strong>Example helper</strong>" )
+                    template: _.template( "<strong>Example helper</strong>" )
                 }
             );
 

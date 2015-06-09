@@ -77,7 +77,7 @@
                     res = template(
                         {
                             "html"          :
-                              cmpProto.generate.apply( cmpProto  ,
+                              cmpProto.template.apply( cmpProto  ,
                                                        arguments ) ,
                             "tagName"       :
                               ( _.result( cmpProto, "tagName" )  ||
@@ -166,7 +166,7 @@
             _.extend(
                 Backbone.Helper.prototype ,
                 {
-                    generate:   function( ) {
+                    template:   function( ) {
                         return "";
                     }
                 }

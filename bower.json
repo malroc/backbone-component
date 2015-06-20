@@ -12,7 +12,7 @@
     "components"
   ],
   "dependencies": {
-    "backbone": ">=1.0.0"
+    "backbone": ">=1.2.0"
   },
   "license": "MIT",
   "ignore": [

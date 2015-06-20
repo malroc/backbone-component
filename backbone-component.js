@@ -191,7 +191,10 @@
                     Backbone.View.prototype ,
                     "$"                     ,
                     "setElement"            ,
+                    "_setElement"           ,
+                    "delegate"              ,
                     "delegateEvents"        ,
+                    "undelegate"            ,
                     "undelegateEvents"
                 )
             );

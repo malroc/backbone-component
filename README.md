@@ -1,44 +1,60 @@
 backbone-component
 ==================
 
-`Backbone.Component` plugin adds component concept to `Backbone`. If you are familiar with web components draft or components in `Ember`, the idea of `Backbone.Component` is very similar.
+`Backbone.Component` plugin adds component concept to `Backbone`.
+If you are familiar with web components draft or components in `Ember`,
+the idea of `Backbone.Component` is very similar.
 
-You can think of component as of isolated view-like object controlling some typical UI elements.
+You can think of component as of isolated view-like object controlling
+some typical UI elements.
 
 *Backbone.Component is an open-source part of http://sourcetalk.net*
 
 ## The problem
 
-Say you have a date picker element controlled by some `jQuery` plugin. It is used in some of your views, so every time you render a view you need to initialize your date pickers, and probably also deinitialize on exit. Thus you need to write a lot of duplicate code.
+Say you have a date picker element controlled by some `jQuery` plugin.
+It is used in some of your views, so every time you render a view you need to
+initialize your date pickers, and probably also deinitialize on exit.
+Thus you need to write a lot of duplicate code.
 
-In the general case you can't solve this issue with inheritance, since you may need to use the same plugin in the views having different parents, while you don't want to execute that code in every single view.
+In the general case you can't solve this issue with inheritance, since you may
+need to use the same plugin in the views having different parents,
+while you don't want to execute that code in every single view.
 
-Creating a subview for that element is a bit better, but you still have to manually handle all these subviews.
+Creating a subview for that element is a bit better, but you still have to
+manually handle all these subviews.
 
 That's what `Backbone.Component` is for.
 
 ## Installation
 
-`Backbone.Component` is available in Bower repository as `backbone_component`. If you use Bower, execute the following in your terminal window:
+`Backbone.Component` is available in Bower repository as `backbone_component`.
+If you use Bower, execute the following in your terminal window:
 
 ```bash
 bower install backbone_component
 ```
 
-Otherwise, just copy the file you need (minified or development version) to your javascript directory.
+Otherwise, just copy the file you need (minified or development version)
+to your javascript directory.
 
 ## Usage
 
 You need to include `backbone-component.js` in your project after `backbone.js`.
 
 ### Dependencies
-The only external dependencies of `Backbone.Component` are `Backbone` itself and `Underscore` (which is also required by `Backbone`). `jQuery`/`Zepto` is not required, but as in case of `Backbone` gives you additional posiibilities (see below).
+The only external dependencies of `Backbone.Component` are `Backbone` itself and
+`Underscore` (which is also required by `Backbone`).
+`jQuery`/`Zepto` is not required, but as in case of `Backbone` gives you
+additional posiibilities (see below).
 
-Also, `Backbone.Comonent` depends on `MutationObserver`. If you want to support browsers that don't implement it (e.g. IE<11) you need to use some polyfill.
+Also, `Backbone.Comonent` depends on `MutationObserver`. If you want to support
+browsers that don't implement it (e.g. IE<11) you need to use some polyfill.
 
 ### Initialization
 
-First, you need to initialize `Backbone.Component` (the values below are the defaults):
+First, you need to initialize `Backbone.Component`
+(the values below are the defaults):
 
 ```javascript
 Backbone.Component.initialize(
@@ -50,11 +66,23 @@ Backbone.Component.initialize(
 );
 ```
 
-1. `namespace` - namespace containing your components. If for any reason you don't use namespaces at all and store all your classes in global namespace, you can set `"namespace" : window`, and that will work, but you better don't do this. This option accepts array of namespaces in case you have several namespaces for your components.
+1. `namespace` - namespace containing your components. If for any reason you
+   don't use namespaces at all and store all your classes in global namespace,
+   you can set `"namespace" : window`, and that will work, but you better don't
+   do this. This option accepts array of namespaces in case you have several
+   namespaces for your components.
 
-2. `baseViewClass` - base class for your views. Usually `Backbone.View`, but you may use your own parent class. Please keep in mind that the prototype of the view passed here will be extended, so if you don't want to add method to your base class you can create a separate base class to use with components (but in this case they won't be available anywhere else).
+2. `baseViewClass` - base class for your views. Usually `Backbone.View`, but you
+   may use your own parent class. Please keep in mind that the prototype of the
+   view passed here will be extended, so if you don't want to add method to your
+   base class you can create a separate base class to use with components
+   (but in this case they won't be available anywhere else).
 
-3. `transformHTML` - wrapper for the generated HTML, a function accepting and returning a string. This may be helpful if your template engine escapes HTML by default but allows an option to unescape it (`safe` method in `Skim`), or you want to add your custom HTML to that generated by `Backbone.Component`. If set to `null` (by default), doesn't perform any transformation.
+3. `transformHTML` - wrapper for the generated HTML, a function accepting and
+   returning a string. This may be helpful if your template engine escapes HTML
+   by default but allows an option to unescape it (`safe` method in `Skim`), or
+   you want to add your custom HTML to that generated by `Backbone.Component`.
+   If set to `null` (by default), doesn't perform any transformation.
 
 ### Creating your component
 
@@ -63,34 +91,55 @@ You need to extend `Backbone.Component` and override 3 methods:
 ```javascript
 Backbone.Components.YourComponent = Backbone.Component.extend(
   {
-    generate:   function( your, own, params ) { } ,
-    activate:   function( ) { }                   ,
-    deactivate: function( ) { }
+    template:   function( your, own, params ) { } ,
+    initialize: function( ) { }                   ,
+    remove:     function( ) { }
   }
 );
 ```
 
-1. `generate` - generates base HTML of your component. Most probably it will contain some template processing code. In the simplest case, you can even point `generate` to a template processing method: `generate: _.template( "<div>...</div>" )`. It must return the string containing the generated HTML. In this method, you can define any arguments you need. It is supposed that the last argument is a hash containing additional options, but you can safely ignore this convention. Currently 2 options have the impact on the generated HTML: `options.wrapper.htmlId` and `options.wrapper.htmlClass`, they will appropriately set `id` and `class` of the wrapper HTML element. Also you are free to add your own options for your components.
+1. `template` - generates base HTML of your component. Most probably it will
+   contain some template processing code. It must return a string containing the
+   generated HTML. In this method, you can define any arguments you need.
+   It is supposed that the last argument is a hash containing additional
+   options, but you can safely ignore this convention. Currently 2 options have
+   the impact on the generated HTML: `options.wrapper.htmlId` and
+   `options.wrapper.htmlClass`, they will appropriately set `id` and `class` of
+   the wrapper HTML element. Also you are free to add your own options for
+   your components.
 
-2. `activate` - any code you need to activate your component. This method is called when the component appears in DOM. It is executed for every single component instance in your view. In case of our hypothetical date picker plugin, it can look like this: `this.$( "input" ).datepicker( )`. Accepts no arguments, any returned value is ignored.
+2. `initialize` - any code you need to initialize your component. This method is
+   called when the component appears in DOM. It is executed for every single
+   component instance in your view. In case of our hypothetical date picker
+   plugin, it can look like this: `this.$( "input" ).datepicker( )`.
+   Accepts no arguments, any returned value is ignored.
 
-3. `deactivate` - any code you need to safely deactivate your component. This method is called when the component disappears from DOM. It is executed for every single component instance in your view. In many cases, it isn't really necessary, and you can skip this method. Accepts no arguments, any returned value is ignored.
+3. `remove` - any code you need to safely remove your component.
+   This method is called when the component disappears from DOM.
+   It is executed for every single component instance in your view.
+   In many cases, it isn't really necessary, and you can skip this method.
+   Accepts no arguments, any returned value is ignored.
 
 ### Rendering
 
-Once you defined your component class, you can render your component in templates by calling `insertYourComponent` method. Assuming you use underscore-like templates, and inside the template `this` points to your `Backbone.View` instance, you render your components like this:
+Once you defined your component class, you can render your component in
+templates by calling `insertYourComponent` method. Assuming you use
+underscore-like templates, and inside the template `this` points to your
+`Backbone.View` instance, you render your components like this:
 
 ```erb
 <%= this.insertYourComponent( your, own, params ) %>
 ```
 
-All the arguments here are passed to the component's `generate` method unchanged. `insert<ComponentName>` methods are added to your base view class during `Backbone.Component` initialization.
+All the arguments here are passed to the component's `template` method
+unchanged. `insert<ComponentName>` methods are added to your base view class
+during `Backbone.Component` initialization.
 
 ### Observing
 
 In some cases you may preffer writing HTML for your components manually instead
 of generating it in your component class. You can still take advantage of using
-`Backbone.Component`'s `activate` & `deactivate` methods.
+`Backbone.Component`'s `initialize` & `remove` methods and event handling.
 
 Since version 0.2.3, you don't need to do anything for that: just create an HTML
 element with class either matching your component's `className` attribute if it
@@ -98,34 +147,42 @@ is defined, or `component-your-component-name` (assuming your component class
 name is `YourComponentName`) otherwise.
 
 Everytime an element with an appropriate class appears/disappears, component's
-`activate`/`deactivate` method executes.
+`initialize`/`remove` method executes.
 
 *Note:* you **have** to create the content of your element manually in this
 case. `Backbone.Component` won't do that for you.
 
 ### Backbone.View's methods & properties
 
-Though not a descendant of `Backbone.View`, `Backbone.Component` inherits some of its methods and properties. Here they are: `el`, `$el`, `events`, `tagName`, `className`, `id`, `$( )`, `setElement( )`, `delegateEvents( )`/`undelegateEvents( )` (most probably you'll never need to explicitly call these two). All these methods and properties work in exactly the same way as they do in `Backbone.View` (except that `tagName` is a `span` by default).
+Though not a descendant of `Backbone.View`, `Backbone.Component` inherits some
+of its methods and properties. Here they are: `el`, `$el`, `events`, `tagName`,
+`className`, `id`, `$( )`, `setElement( )`, `_setElement( )`,
+`delegate( )`/`undelegate( )`, `delegateEvents( )`/`undelegateEvents( )`.
+All these methods and properties work in exactly the same way as they do in
+`Backbone.View` (except that `tagName` is a `span` by default).
 
-Also, `Backbone.Component` uses `Backbone.Event` mixin, so you are free to use events in your components just like in any other `Backbone` object.
+Also, `Backbone.Component` uses `Backbone.Event` mixin, so you are free to use
+events in your components just like in any other `Backbone` object.
 
-*Note:* some of these methods and variables are available only if you use `jQuery` or similar lib. See `Backbone` documentation for more details.
+*Note:* some of these methods and variables are available only if you use
+`jQuery` or similar lib. See `Backbone` documentation for more details.
 
 ## Helpers
 
-If you are familiar with `Ruby on Rails` or similar MVC framework, you probably already know what helpers are. In `Backbone.Component`, helpers are very similar to components except that they don't have activation/deactivation logic.
+If you are familiar with `Ruby on Rails` or similar MVC framework, you probably
+already know what helpers are. In `Backbone.Component`, helpers are very similar
+to components except that they don't have initialize/remove logic.
 
-To create a component, you need to extend `Backbone.Helper` and override `generate` method. In the simplest case, your helper may look like this:
+To create a helper, you need to extend `Backbone.Helper` and override `template`
+method. In the simplest case, your helper may look like this:
 
 ```javascript
 Backbone.Helpers.YourHelper = Backbone.Helper.extend(
   {
-    generate: _.template( "<div>...</div>" );
+    template: _.template( "<div>...</div>" );
   }
 );
 ```
-
-Or you may need to perform some complex operations and place this code in `generate` method instead of template itself.
 
 Now you can call it in your templates:
 
@@ -133,12 +190,23 @@ Now you can call it in your templates:
 <%= this.insertYourHelper( your, own, params ) %>
 ```
 
-Unlike components, helpers do not inherit `Backbone.View`'s methods and variables, and do not use `Backbone.Events`.
+Unlike components, helpers do not inherit `Backbone.View`'s methods and
+variables, and do not use `Backbone.Events`.
 
-*Note:* for performance reasons, you should not use components where helpers will do the work. `Backbone.Component` doesn't observe helpers in the way it observes components, so if all you need is to render a template, please consider using helpers.
+*Note:* for performance reasons, you should not use components where helpers
+will do the work. `Backbone.Component` doesn't observe helpers in the way it
+observes components, so if all you need is to render a template,
+please consider using helpers.
 
 
 ## Change Log
+
+### v 0.3.0 (June 20, 2015)
+
+* Moved to Backbone 1.2.x (support for older versions is dropped)
+* Renamed: `activate` -> `initialize`, `deactivate` -> `remove`,
+  `generate` -> `template`
+* Performance improved
 
 ### v 0.2.3 (January 2, 2015)
 

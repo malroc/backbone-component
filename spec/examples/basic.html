@@ -47,6 +47,20 @@
                 }
             );
 
+            Example.Component3 = Backbone.Component.extend(
+                {
+                    selector: "[data-component-3]",
+
+                    initialize: function( ) {
+                        $( "#initialize-output" ).append( "*" );
+                    } ,
+
+                    remove: function( ) {
+                        $( "#remove-output" ).append( "/" );
+                    }
+                }
+            );
+
             Example.Helper = Backbone.Helper.extend(
                 {
                     template: _.template( "<strong>Example helper</strong>" )
@@ -58,6 +72,7 @@
                     template: _.template(
                         "<p><%= this.insertComponent1( ) %></p>" +
                         "<%= this.insertComponent2( ) %>"        +
+                        "<div data-component-3=\"\"></div>"      +
                         "<p><%= this.insertHelper( ) %></p>"
                     ) ,
 

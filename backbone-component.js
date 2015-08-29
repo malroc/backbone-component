@@ -64,9 +64,10 @@
                 var className   = toClassName( componentName ,
                                                cmpProto      ,
                                                isComponent   );
+                var selector    = cmpProto.selector || "." + className;
 
                 if ( isComponent ) {
-                    observe( "." + className, cls );
+                    observe( selector, cls );
                 }
 
                 viewProto[ "insert" + componentName ] = function( ) {

@@ -8,6 +8,12 @@ casper.test.begin(
                 test.assertTitle( "Backbone.Component: basic test" ,
                                   "HTML page title"                );
                 this.click( "#render-view-1" );
+            }
+        );
+
+        casper.waitForSelectorTextChange(
+            "#initialize-output" ,
+            function( ) {
                 this.click( "#render-view-2" );
             }
         );
@@ -42,7 +48,7 @@ casper.test.begin(
                                                 " .helper-helper strong"    ,
                                                 "Example helper"            );
                     test.assertSelectorHasText( "#initialize-output"        ,
-                                                "++"                        );
+                                                "+*+*"                      );
                     this.click( "#view-" + i + " .component-component1 a"   );
                 };
             }
@@ -64,8 +70,8 @@ casper.test.begin(
         casper.waitForSelectorTextChange(
             "#remove-output" ,
             function( ) {
-                test.assertSelectorHasText( "#initialize-output" ,
-                                            "++"                 );
+                test.assertSelectorHasText( "#remove-output" ,
+                                            "-/-/"           );
             }
         );
 

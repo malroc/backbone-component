@@ -1,3 +1,7 @@
+### v 0.3.1 (Oct 10, 2015)
+
+ * Added selector attribute for specifying custom selectors for components
+
 ### v 0.3.0 (June 20, 2015)
 
 * Moved to Backbone 1.2.x (support for older versions is dropped)

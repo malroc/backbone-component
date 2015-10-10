@@ -146,6 +146,11 @@ element with class either matching your component's `className` attribute if it
 is defined, or `component-your-component-name` (assuming your component class
 name is `YourComponentName`) otherwise.
 
+Since version 0.3.1, you can also specify a custom selector (`selector`
+attribute) if you don't want to use the default `component-your-component-name`
+convention. E.g. to apply tooltip plugin to all elements with `title` you need
+to create a component with `"selector" : "[title]"`.
+
 Everytime an element with an appropriate class appears/disappears, component's
 `initialize`/`remove` method executes.
 
@@ -200,6 +205,10 @@ please consider using helpers.
 
 
 ## Change Log
+
+### v 0.3.1 (Oct 10, 2015)
+
+* Added `selector` attribute for specifying custom selectors for components
 
 ### v 0.3.0 (June 20, 2015)
 

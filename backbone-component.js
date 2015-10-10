@@ -1,4 +1,4 @@
-// Backbone.Component v0.3.0
+// Backbone.Component v0.3.1
 // (c) 2015 Oleg Kalistratov, for SourceTalk project (http://sourcetalk.net)
 // Distributed Under MIT License
 
